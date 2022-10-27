@@ -1,10 +1,4 @@
 from basic_check_functions import in_common
-
-def main():
-    pass
-    # P = '4+(5+(6)^2+8*9^(8))+5*2'
-    # Q = '(1+1/600)^600'
-    # print(calculate(Q))
     
 def deparenthesize(mex: list) -> list:
     c = 0
@@ -51,24 +45,34 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
     
     return mex 
         
-'''
-All operations use the a?b format where ? is some operator (e.g. a^b, a+b, a/b, etc.). we replace 'a' with the result 
-of the operation, and get rid of the operator and b (i.e. slice out '?b'). 
 
-Notice that we don't increment the iterator 'c' if we complete an 'a?b' operation. Since we are slicing out part of 
-the string, we want to avoid the "shifting window" problem
+# All operations use the a?b format where ? is some operator (e.g. a^b, a+b, a/b, etc.). we replace 'a' with the result 
+# of the operation, and get rid of the operator and b (i.e. slice out '?b'). 
+# Notice that we don't increment the iterator 'c' if we complete an 'a?b' operation. Since we are slicing out part of 
+# the string, we want to avoid the "shifting window" problem
 
-'''
+
 def solve(mex: list):
     if len(mex) == 1:
         return mex[0]
-    c = 0
-    while '^' in mex and c < len(mex): # if we find exponent sign
+    
+    c = len(mex)-1
+    while '^' in mex and c > -1: # if we find exponent sign
         if mex[c] == '^':
             mex[c-1] = str(pow(float(mex[c-1]),float(mex[c+1]))) 
             mex = mex[:c]+mex[c+2:]
+            c -= 2 
+            '''
+            since we're slicing out some of the string, and since 'c' approaches from the upper end of the 
+            string, then we need to shift c over by how many elements are getting deleted (which is 2, if we 
+            consider the a?b system)
+            '''
         else:
-            c += 1
+            c -= 1
+    '''
+    We do this in reverse, because if we have something like 2^2^3, we want to evaluate it in reverse (i.e. evaluate
+    using the order of 2^(2^3))
+    '''
             
     c = 0
     while ('*' in mex or '/' in mex) and c < len(mex): # if we find multiplication or division sign
@@ -101,5 +105,3 @@ def solve(mex: list):
 
 def calculate(mex): # combines the other functions 
     return float(deparenthesize(numerize(mex)))
-
-main()
