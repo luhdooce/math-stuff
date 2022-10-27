@@ -1,9 +1,10 @@
 from basic_check_functions import in_common
 
 def main():
-    P = '4+(5+(6)^2+8*9^(8))+5*2'
-    Q = '(1+1/600)^600'
-    print(calculate(Q))
+    pass
+    # P = '4+(5+(6)^2+8*9^(8))+5*2'
+    # Q = '(1+1/600)^600'
+    # print(calculate(Q))
     
 def deparenthesize(mex: list) -> list:
     c = 0
@@ -48,7 +49,6 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
         else: # if current symbol is not a digit, move on
             c += 1
     
-    print(mex)
     return mex 
         
 '''

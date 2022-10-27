@@ -1,3 +1,4 @@
-import pycalculator
+from pycalculator import calculate
 
-print(pycalculator.calculate('5+6'))
+print(calculate('6+7'))
+
