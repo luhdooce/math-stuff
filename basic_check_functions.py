@@ -8,6 +8,4 @@ def in_common(mex,symbols):
     return common
 
 
-# test change
-
-    
+# test change 2
