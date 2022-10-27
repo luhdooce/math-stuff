@@ -1,13 +1,17 @@
 from basic_check_functions import in_common
+from recursivefunctions import factorial
+import math
     
+    
+# functions use the fx format. First, the user inputs in the form of f(x). The program then
+# removes the parentheses to make it a format of fx (as two elements), and then immediately 
+# attempts to solve fx and simplify it to a single element. It replaces 'f' with this element
+# and removes 'x' from the list
 def desymbolize(mex: list) -> list: # aims to simplify symbols like parentheses or functions
-    '''
-    We can solve for all parentheses, then solve for functions (e.g. sin, factorial, abs, etc.). However, some 
-    of these functions might be within parentheses, which means that the solve() function will attempt to parse 
-    them, which is bad. fix this
-    '''
+    
     c = 0
     left = 0
+    
     while ('(' in mex or ')' in mex) and c < len(mex): # check if parentheses in math expression
         if mex[c] == '(': # track latest OPEN parenthesis
             left = c
@@ -20,8 +24,16 @@ def desymbolize(mex: list) -> list: # aims to simplify symbols like parentheses 
             '''
             mex[left] = solve(mex[left+1:c]) 
             mex = mex[:left+1]+mex[c+1:] # 
-            c = 0 # need to restart from the beginning, in case we missed some opening parentheses along the way (almost guaranteed, since we evaluate from innermost parentheses outwards)
             
+            # check if something precedes our newly formed value, 
+            # and if it's a function
+            if 0 <= left-1 and mex[left-1].isalpha(): 
+                # pass in the name of the previous function, and the input into the function
+                mex[left-1] = func_parse(mex[left-1],mex[left]) 
+                mex.pop(left) # remove the remaining value (see guide above this code function)
+                # mex = mex[:left]+mex[left+1:] also works instead of pop()
+                
+            c = 0 # need to restart from the beginning, in case we missed some opening parentheses along the way (almost guaranteed, since we evaluate from innermost parentheses outwards)
             #print('mex becomes ', mex)
         else: 
             # keep going
@@ -35,7 +47,6 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
     mex = list(mex)
     c = 1
     num_digs = ['.','0','1','2','3','4','5','6','7','8','9']
-    func_names = ['sin', 'cos', 'tan', 'fact']
     while c < len(mex): 
         # in_common checks how many 
         if len(in_common(mex[c],num_digs)) > 0: # check if current symbol is a digit or a decimal point
@@ -115,6 +126,19 @@ def solve(mex: list):
             c += 1
             
     return str(mex[0])
+
+def func_parse(function,x): 
+    x = float(x)
+    func_names = {
+        'sin' : math.sin(x), 
+        'cos' : math.cos(x), 
+        'tan' : math.tan(x), 
+        'fact' : factorial(x)
+        }
+    for i in func_names:
+        if function == i:
+            return func_names[function]
+    # add a check here, in case the function is not defined
 
 def calculate(mex): # combines the other functions 
     return float(desymbolize(numerize(mex)))
