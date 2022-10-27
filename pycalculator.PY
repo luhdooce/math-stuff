@@ -35,6 +35,7 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
     mex = list(mex)
     c = 1
     num_digs = ['.','0','1','2','3','4','5','6','7','8','9']
+    func_names = ['sin', 'cos', 'tan', 'fact']
     while c < len(mex): 
         # in_common checks how many 
         if len(in_common(mex[c],num_digs)) > 0: # check if current symbol is a digit or a decimal point
@@ -44,6 +45,13 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
                 mex.pop(c)
                 mex[c-1] += hold
             else: # if not, then we just move on
+                c += 1
+        elif mex[c].isalpha(): # check if current symbol is a letter
+            if mex[c-1].isalpha():
+                hold = mex[c]
+                mex.pop(c)
+                mex[c-1] += hold
+            else:
                 c += 1
         else: # if current symbol is not a digit, move on
             c += 1
