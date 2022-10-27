@@ -1,8 +1,9 @@
-# test git push change
+from basic_check_functions import in_common
 
 def main():
     P = '4+(5+(6)^2+8*9^(8))+5*2'
-    print(calculate(P))
+    Q = '(1+1/600)^600'
+    print(calculate(Q))
     
 def deparenthesize(mex: list) -> list:
     c = 0
@@ -33,10 +34,11 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
     # suppose string = '345+879'
     mex = list(mex)
     c = 1
-    
+    num_digs = ['.','0','1','2','3','4','5','6','7','8','9']
     while c < len(mex): 
-        if mex[c].isnumeric(): # check if current symbol is a digit
-            if mex[c-1].isnumeric(): # check if previous element contains only digits
+        # in_common checks how many 
+        if len(in_common(mex[c],num_digs)) > 0: # check if current symbol is a digit or a decimal point
+            if len(in_common(mex[c-1],num_digs)) > 0: # check if previous element contains only digits or decimal points
                 # add current symbol to the previous element (appending onto the previous number)
                 hold = mex[c]
                 mex.pop(c)
@@ -45,7 +47,8 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
                 c += 1
         else: # if current symbol is not a digit, move on
             c += 1
-            
+    
+    print(mex)
     return mex 
         
 '''
