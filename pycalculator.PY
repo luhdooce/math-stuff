@@ -1,6 +1,11 @@
 from basic_check_functions import in_common
     
-def deparenthesize(mex: list) -> list:
+def desymbolize(mex: list) -> list: # aims to simplify symbols like parentheses or functions
+    '''
+    We can solve for all parentheses, then solve for functions (e.g. sin, factorial, abs, etc.). However, some 
+    of these functions might be within parentheses, which means that the solve() function will attempt to parse 
+    them, which is bad. fix this
+    '''
     c = 0
     left = 0
     while ('(' in mex or ')' in mex) and c < len(mex): # check if parentheses in math expression
@@ -104,4 +109,4 @@ def solve(mex: list):
     return str(mex[0])
 
 def calculate(mex): # combines the other functions 
-    return float(deparenthesize(numerize(mex)))
+    return float(desymbolize(numerize(mex)))

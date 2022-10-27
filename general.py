@@ -1,6 +1,6 @@
 from pycalculator import calculate
 
 def main():
-    print(calculate('2^2^3'))
+    print(calculate('9^(1/(1+2))^6'))
     
 main()
