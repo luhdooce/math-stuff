@@ -81,7 +81,7 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
             else:
                 mex[c+1] = '-' + mex[c+1] # add negative sign to number after subtraction operator 
                 print(mex)
-                mex.pop(c)
+                mex.pop(c) # get rid of the actual subtraction operator
             '''
             elif 0 <= c-1 and mex[c-1] in symbs:
                 mex[c+1] = '-' + mex[c+1]
