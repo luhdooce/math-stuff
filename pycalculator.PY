@@ -45,12 +45,15 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
         return mex[0]
     # suppose string = '345+879'
     mex = list(mex)
-    c = 1
+    c = 0
+    ops,parenths = ['*','-','+','/','^'],['(',')']
     num_digs = ['.','0','1','2','3','4','5','6','7','8','9']
     while c < len(mex): 
         # in_common checks how many 
         if len(in_common(mex[c],num_digs)) > 0: # check if current symbol is a digit or a decimal point
-            if len(in_common(mex[c-1],num_digs)) > 0: # check if previous element contains only digits or decimal points
+            # check if previous element contains only digits or decimal points
+            # also must ensure that there actually IS a previous element
+            if 0 < c and len(in_common(mex[c-1],num_digs)) > 0: 
                 # add current symbol to the previous element (appending onto the previous number)
                 hold = mex[c]
                 mex.pop(c)
@@ -64,6 +67,30 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
                 mex[c-1] += hold
             else:
                 c += 1
+        
+        elif mex[c] == '-': # check if there is a negative sign
+            print('ass')
+            if 0 <= c-1: # check if there is a previous symbol
+                if mex[c-1].isnumeric(): # if symbol before subtraction is a number
+                    mex[c] = '+' # change subtraction sign to addition sign
+                    mex[c+1] = '-' + mex[c+1] # add '-' before the next number to change its sign
+                else:
+                    mex[c+1] = '-' + mex[c+1]
+                    mex.pop(c)
+                    # c -= 1
+            else:
+                mex[c+1] = '-' + mex[c+1] # add negative sign to number after subtraction operator 
+                print(mex)
+                mex.pop(c)
+            '''
+            elif 0 <= c-1 and mex[c-1] in symbs:
+                mex[c+1] = '-' + mex[c+1]
+                mex.pop(c)
+                c -= 1
+            elif c == 0:
+                mex[c+1] = '-' + mex[c+1]
+                mex.pop(c)
+            '''
         else: # if current symbol is not a digit, move on
             c += 1
     
@@ -113,15 +140,16 @@ def solve(mex: list):
             c += 1
             
     c = 0
-    while ('+' in mex or '-' in mex) and c < len(mex): # if we find addition or subtraction sign
+    while c < len(mex): 
         if mex[c] == '+':
             # print(mex[c-1],mex[c],mex[c+1])
             mex[c-1] = str(float(mex[c-1])+float(mex[c+1]))
             mex = mex[:c]+mex[c+2:]
-        elif mex[c] == '-':
-            #print(mex[c-1],mex[c],mex[c+1])
-            mex[c-1] = str(float(mex[c-1])-float(mex[c+1]))
-            mex = mex[:c]+mex[c+2:]
+        # elif mex[c][0] == '-':
+            # print(mex[c-1],mex[c],mex[c+1])
+            # print(mex[c])
+            # mex[c-1] = str(float(mex[c-1])+float(mex[c]))
+            # mex = mex[:c]+mex[c+1:]
         else:
             c += 1
             
@@ -133,7 +161,8 @@ def func_parse(function,x):
         'sin' : math.sin(x), 
         'cos' : math.cos(x), 
         'tan' : math.tan(x), 
-        'fact' : factorial(x)
+        'fact' : factorial(x),
+        'sqrt' : math.pow(x,1/2)
         }
     for i in func_names:
         if function == i:
@@ -141,4 +170,4 @@ def func_parse(function,x):
     # add a check here, in case the function is not defined
 
 def calculate(mex): # combines the other functions 
-    return float(desymbolize(numerize(mex)))
+    return desymbolize(numerize(mex))
