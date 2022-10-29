@@ -82,13 +82,15 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
                     mex.insert(c+2, '-1')
                     mex.insert(c+3, ')')
                     mex.insert(c+4, '*')
-                else:
+                else: # if previous symbol is not a number or the end of a parenthesis block, we just replace
+                    # '-' with '(-1)*'. In this case, we don't have to worry about any preceding operator
                     mex.pop(c)   
                     mex.insert(c, '(') 
                     mex.insert(c+1, '-1')
                     mex.insert(c+2, ')')
                     mex.insert(c+3, '*')
-            else:
+            else: # runs if there is no previous symbol
+                # simply convert '-' into '(-1)*'
                 mex.pop(c)   
                 mex.insert(c, '(') 
                 mex.insert(c+1, '-1')
