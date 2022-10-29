@@ -38,6 +38,7 @@ def desymbolize(mex: list) -> list: # aims to simplify symbols like parentheses 
         else: 
             # keep going
             c += 1
+        print('desymbolize',mex)
     return solve(mex)
         
 def numerize(mex: str) -> list: # converts the string expression into a parsed list
@@ -69,19 +70,30 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
                 c += 1
         
         elif mex[c] == '-': # check if there is a negative sign
-            print('ass')
+            print('numerize',mex)
             if 0 <= c-1: # check if there is a previous symbol
-                if mex[c-1].isnumeric(): # if symbol before subtraction is a number
-                    mex[c] = '+' # change subtraction sign to addition sign
-                    mex[c+1] = '-' + mex[c+1] # add '-' before the next number to change its sign
+                # check if previous symbol is a number or the end of a parenthesis block
+                if mex[c-1].isnumeric() or mex[c-1] == ')': 
+                    print(mex[c-1])
+                    mex[c] = '+'
+                    # replace '-' with '+(-1)*' (so we're multiplying by -1). This time, the 
+                    # '-1' is an element on its own
+                    mex.insert(c+1, '(') 
+                    mex.insert(c+2, '-1')
+                    mex.insert(c+3, ')')
+                    mex.insert(c+4, '*')
                 else:
-                    mex[c+1] = '-' + mex[c+1]
-                    mex.pop(c)
-                    # c -= 1
+                    mex.pop(c)   
+                    mex.insert(c, '(') 
+                    mex.insert(c+1, '-1')
+                    mex.insert(c+2, ')')
+                    mex.insert(c+3, '*')
             else:
-                mex[c+1] = '-' + mex[c+1] # add negative sign to number after subtraction operator 
-                print(mex)
-                mex.pop(c) # get rid of the actual subtraction operator
+                mex.pop(c)   
+                mex.insert(c, '(') 
+                mex.insert(c+1, '-1')
+                mex.insert(c+2, ')')
+                mex.insert(c+3, '*')
             '''
             elif 0 <= c-1 and mex[c-1] in symbs:
                 mex[c+1] = '-' + mex[c+1]
@@ -91,8 +103,10 @@ def numerize(mex: str) -> list: # converts the string expression into a parsed l
                 mex[c+1] = '-' + mex[c+1]
                 mex.pop(c)
             '''
+            c += 1
         else: # if current symbol is not a digit, move on
             c += 1
+        print('numerize',mex)
     
     return mex 
         
